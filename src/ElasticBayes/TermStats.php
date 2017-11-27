@@ -20,11 +20,19 @@ class TermStats {
     /** @var \LRUCache\LRUCache  */
     private $termLRU;
 
-    public function __construct(Client &$client, LRUCache &$termLRU, $term, $cardinality) {
+    //Index name and type
+    private $index_name;
+    private $index_type;
+
+    public function __construct(Client &$client, LRUCache &$termLRU, $term, $cardinality,
+                                $index_name, $index_type) {
         $this->term = $term;
         $this->client = $client;
         $this->labelCardinality = $cardinality;
         $this->termLRU = $termLRU;
+
+        $this->index_name = $index_name;
+        $this->index_type = $index_type;
     }
 
     /**
@@ -52,8 +60,8 @@ class TermStats {
          *  - terms agg over the labels to get label counts for this term
          */
         $params = [
-            'index' => 'reuters',
-            'type' => 'train',
+            'index' => $this->index_name,
+            'type' => $this->index_type,
             'search_type' => 'count',
             'body' => [
                 'query' => [
@@ -110,6 +118,11 @@ class TermStats {
 
     public function getTermCount() {
         return $this->numDocsWithTerm;
+    }
+
+    public function getTerm()
+    {
+        return $this->term;
     }
 
 

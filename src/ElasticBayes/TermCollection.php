@@ -25,10 +25,18 @@ class TermCollection {
     /** @var \LRUCache\LRUCache  */
     private $termLRU;
 
-    public function __construct(Client &$client, LRUCache &$termLRU, $labelStats) {
+    //Index name and type
+    private $index_name;
+    private $index_type;
+
+    public function __construct(Client &$client, LRUCache &$termLRU, $labelStats,
+                                $index_name, $index_type) {
         $this->client = $client;
         $this->labelStats = $labelStats;
         $this->termLRU = $termLRU;
+
+        $this->index_name = $index_name;
+        $this->index_type = $index_type;
     }
 
     /**
@@ -58,7 +66,8 @@ class TermCollection {
 
         // And farm out the stat collection to TermStats object
         foreach ($terms as $term) {
-            $t = new TermStats($this->client, $this->termLRU, $term['token'], count($this->labelStats));
+            $t = new TermStats($this->client, $this->termLRU, $term['token'],
+                               count($this->labelStats),$this->index_name, $this->index_type);
             $t->collectStats( $this->labelField, $this->textField);
             $this->terms[] = $t;
         }
@@ -92,12 +101,11 @@ class TermCollection {
             // a priori probability of $label
             // (how many docs have this label?)
             // In reality, this term often hurts prediction accuracy, but I left it in to show hot it is done
-            //$pH = $this->labelStats[$label]['prob'];
-            $pH = 1;
+            $pH = $this->labelStats[$label]['prob'];
 
             //$posteriori = ($pXH * $pH) / ($pXH + $pNotXH + 0.0001);
             // ^^^ Technically the 'accurate' formula, but the denominator is always 1
-            $posteriori = ($pXH * $pH);
+            $posteriori = ($pXH * $pH) / ($pXH + $pNotXH + 0.0001);
 
             // Normalize rarely seen terms.  This also tends to hurt prediction accuracy imo
             //$posteriori = ( ( 5 * 0.5) + ($termCount * $posteriori) ) / ( 5 + $termCount);
@@ -107,10 +115,13 @@ class TermCollection {
                 $posteriori = 0.99999;
             }
 
+
             $logSum += log(1 - $posteriori) - log($posteriori);
         }
 
-        return 1 / ( 1 + exp($logSum));
+        $p = 1 / ( 1 + exp($logSum));
+
+        return $p;
     }
 
     /**
@@ -119,7 +130,7 @@ class TermCollection {
      */
     private function getTerms($data) {
         $params = [
-            'index' => 'reuters',
+            'index' => $this->index_name,
             'field' => $this->textField,
             'body' => $data
         ];

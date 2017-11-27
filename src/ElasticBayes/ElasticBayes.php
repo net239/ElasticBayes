@@ -15,9 +15,15 @@ class ElasticBayes {
     /** @var \LRUCache\LRUCache  */
     private $termLRU;
 
-    public function __construct($labelField) {
+    //Index name and type
+    private $index_name;
+    private $index_type;
+
+    public function __construct($labelField, $index_name = 'reuters', $index_type = 'train') {
         $this->client = new Client();
         $this->field = $labelField;
+        $this->index_name = $index_name;
+        $this->index_type = $index_type;
         $this->getLabelCounts();
         $this->termLRU = new \LRUCache\LRUCache(10000);
     }
@@ -27,7 +33,8 @@ class ElasticBayes {
      * sorted and normalized 1-100 by default
      */
     public function predict($data, $textField, $normalize = true) {
-        $termCollection = new TermCollection($this->client, $this->termLRU, $this->labels, $data);
+        $termCollection = new TermCollection($this->client, $this->termLRU, $this->labels,
+                                             $this->index_name, $this->index_type);
         $termCollection->setLabelField($this->field);
         $termCollection->setTextField($textField);
         $termCollection->collectTerms($data);
@@ -65,8 +72,8 @@ class ElasticBayes {
     private function getLabelCounts() {
 
         $params = [
-            'index' => 'reuters',
-            'type' => 'train',
+            'index' => $this->index_name,
+            'type' => $this->index_type,
             'search_type' => 'count',
             'body' => [
                 'aggs' => [
