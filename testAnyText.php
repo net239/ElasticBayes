@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 if ( $argc != 6)
 {
     printf("Need all arguments, found only %d\n",$argc);
-    printf("Usage:testProductInquiries.php '%s' '%s' '%s' '%s' '%s'\n", 
+    printf("Usage:testAnyText.php '%s' '%s' '%s' '%s' '%s'\n", 
             "Column name for label (e.g. SPAM_FLAG)" , "index name" , "index type" , "column name for text", "text to be tested");
     return -1;
 }
