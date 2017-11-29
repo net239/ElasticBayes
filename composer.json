@@ -3,7 +3,7 @@
     "homepage": "https://github.com/net239/ElasticBayes",
     "require": {
         "elasticsearch/elasticsearch": "~1.0",
-        "lrucache/lrucache": "master-dev"
+        "lrucache/lrucache": "dev-master"
     },
     "autoload": {
         "psr-0": {
