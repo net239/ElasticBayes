@@ -19,8 +19,8 @@ class ElasticBayes {
     private $index_name;
     private $index_type;
 
-    public function __construct($labelField, $index_name = 'reuters', $index_type = 'train') {
-        $this->client = new Client();
+    public function __construct($labelField, $index_name = 'reuters', $index_type = 'train', $host = array()) {
+        $this->client = new Client($host);
         $this->field = $labelField;
         $this->index_name = $index_name;
         $this->index_type = $index_type;
