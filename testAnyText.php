@@ -17,9 +17,10 @@ $columnNameForText=$argv[4];
 $text=$argv[5];
 
 printf("Starting.. columnNameForLabel:$columnNameForLabel IndexName:$IndexName IndexType:$IndexType columnNameForText:$columnNameForText\n\n");
-
-$client = new \Elasticsearch\Client();
-$bayes = new \ElasticBayes\ElasticBayes($columnNameForLabel,$IndexName,$IndexType);
+$elasticHost = "127.0.0.1";
+$elasticPort = 9200;
+$client = new \Elasticsearch\Client(array('hosts' => array('host' => $elasticHost, 'port' => $elasticPort)));
+$bayes = new \ElasticBayes\ElasticBayes($columnNameForLabel,$IndexName,$IndexType, $elasticHost, $elasticPort);
 
 $testTexts[] = $text;
 
