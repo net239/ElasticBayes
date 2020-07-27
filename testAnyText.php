@@ -5,8 +5,9 @@ require 'vendor/autoload.php';
 if ( $argc != 8)
 {
     printf("Need all arguments, found only %d\n",$argc);
-    printf("Usage:testAnyText.php '%s' '%s' '%s' '%s' '%s'\n", 
-            "Column name for label (e.g. SPAM_FLAG)" , "index name" , "index type" , "column name for text", "text to be tested");
+    printf("Usage:testAnyText.php '%s' '%s' '%s' '%s' '%s' '%s' '%s'\n", 
+            "Column name for label (e.g. SPAM_FLAG)" , "index name" , "index type" , "column name for text", "text to be tested","elastic host",
+        "elastic port");
     return -1;
 }
 
