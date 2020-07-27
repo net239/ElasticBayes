@@ -2,7 +2,7 @@
 require 'vendor/autoload.php';
 
 
-if ( $argc != 6)
+if ( $argc != 8)
 {
     printf("Need all arguments, found only %d\n",$argc);
     printf("Usage:testAnyText.php '%s' '%s' '%s' '%s' '%s'\n", 
