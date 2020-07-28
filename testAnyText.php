@@ -19,7 +19,8 @@ $text=$argv[5];
 $elasticHost = $argv[6];
 $elasticPort = $argv[7];
 
-printf("Starting.. columnNameForLabel:$columnNameForLabel IndexName:$IndexName IndexType:$IndexType columnNameForText:$columnNameForText\n\n");
+printf("Starting.. columnNameForLabel:$columnNameForLabel IndexName:$IndexName IndexType:$IndexType columnNameForText:$columnNameForText elasticHost:$elasticHost
+elasticPort: $elasticPort \n\n");
 
 $client = new \Elasticsearch\Client(array('hosts' => array('host' => $elasticHost, 'port' => $elasticPort)));
 $bayes = new \ElasticBayes\ElasticBayes($columnNameForLabel,$IndexName,$IndexType, $elasticHost, $elasticPort);
